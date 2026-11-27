@@ -122,7 +122,7 @@ jobs:
           if not path.is_file() and os.environ['INIT_DATA'] != 'true':
               raise SystemExit('No saved seed. Supply the ORIGINAL seed for an existing installation, or select init_data for a FIRST installation')
           PY
-                - name: repair mesa patch header
+      - name: repair mesa patch header
         run: |
           python3 - <<'PY'
           from pathlib import Path
