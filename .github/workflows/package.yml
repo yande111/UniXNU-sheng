@@ -122,6 +122,23 @@ jobs:
           if not path.is_file() and os.environ['INIT_DATA'] != 'true':
               raise SystemExit('No saved seed. Supply the ORIGINAL seed for an existing installation, or select init_data for a FIRST installation')
           PY
+                - name: repair mesa patch header
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('UniXNU/patches/mesa/turnip-frame-diagnostics.patch')
+          s = p.read_text()
+          marker = ('diff --git a/src/freedreno/vulkan/tu_frame_diagnostic.h '
+                    'b/src/freedreno/vulkan/tu_frame_diagnostic.h\n')
+          if marker in s:
+              head, tail = s.split(marker, 1)
+              if not tail.startswith('new file mode '):
+                  p.write_text(head + marker + 'new file mode 100644\n' + tail)
+                  print('inserted new file mode 100644')
+          else:
+              print('patch layout changed; skipped')
+          PY
+
       - name: package
         working-directory: device
         env:
